@@ -1,0 +1,26 @@
+{
+  "name": "notify-over-http",
+  "version": "1.0.0",
+  "description": "Listen and broadcast changes to id's across a clustered network simply over http.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^5.0.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markwylde/notify-over-http.git"
+  },
+  "bugs": {
+    "url": "https://github.com/markwylde/notify-over-http/issues"
+  },
+  "homepage": "https://github.com/markwylde/notify-over-http#readme"
+}
