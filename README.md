@@ -2,7 +2,7 @@
 Listen and broadcast changes to id's across a clustered network simply over http.
 
 ## Example
-```
+```javascript
 const http = require('http');
 const createNotifyServer = require('notify-over-http');
 
