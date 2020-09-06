@@ -1,5 +1,3 @@
-require('wtfnode').init();
-
 const http = require('http');
 
 const test = require('tape');
