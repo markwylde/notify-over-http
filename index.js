@@ -22,6 +22,8 @@ function createNotifyServer (options) {
   }
 
   function handle (request, response) {
+    request.setTimeout(0);
+
     const url = new URL(request.url, 'http://' + request.headers.host);
 
     if (request.method === 'GET') {
