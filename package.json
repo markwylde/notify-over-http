@@ -1,6 +1,6 @@
 {
   "name": "notify-over-http",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Listen and broadcast changes to id's across a clustered network simply over http.",
   "main": "index.js",
   "scripts": {
