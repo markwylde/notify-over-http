@@ -14,9 +14,12 @@ const createNotifyServer = require('notify-over-http');
 
 // Create an instance of the notify server specifing all servers in the cluster
 const notifyServer = createNotifyServer({
-  servers: [
-    'http://localhost:8000/notify'
-  ]
+  servers: [{
+    url: `https://localhost:8000/notify`,
+    headers: {
+      'x-secret': 'supersecret'
+    }
+  }]
 });
 
 // Broadcast to the network that ID 1 has changed every second

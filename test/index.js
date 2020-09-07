@@ -34,7 +34,7 @@ test('one server - listen and broadcast to one - with one id', t => {
   (async function () {
     const { httpServer, notifyServer } = await createNotifyAndHttpServer(8000, {
       servers: [
-        'http://localhost:8000/notify'
+        { url: 'http://localhost:8000/notify' }
       ]
     });
 
@@ -61,7 +61,7 @@ test('one server - listen and broadcast to one - with two ids', t => {
   (async function () {
     const { httpServer, notifyServer } = await createNotifyAndHttpServer(8000, {
       servers: [
-        'http://localhost:8000/notify'
+        { url: 'http://localhost:8000/notify' }
       ]
     });
 
@@ -97,15 +97,15 @@ test('two servers - listen and broadcast to one - with two ids', t => {
   (async function () {
     const instance1 = await createNotifyAndHttpServer(8001, {
       servers: [
-        'http://localhost:8001/notify',
-        'http://localhost:8002/notify'
+        { url: 'http://localhost:8001/notify' },
+        { url: 'http://localhost:8002/notify' }
       ]
     });
 
     const instance2 = await createNotifyAndHttpServer(8002, {
       servers: [
-        'http://localhost:8001/notify',
-        'http://localhost:8002/notify'
+        { url: 'http://localhost:8001/notify' },
+        { url: 'http://localhost:8002/notify' }
       ]
     });
 
@@ -144,15 +144,15 @@ test('two servers - listen and broadcast to two - with two ids', t => {
   (async function () {
     const instance1 = await createNotifyAndHttpServer(8001, {
       servers: [
-        'http://localhost:8001/notify',
-        'http://localhost:8002/notify'
+        { url: 'http://localhost:8001/notify' },
+        { url: 'http://localhost:8002/notify' }
       ]
     });
 
     const instance2 = await createNotifyAndHttpServer(8002, {
       servers: [
-        'http://localhost:8001/notify',
-        'http://localhost:8002/notify'
+        { url: 'http://localhost:8001/notify' },
+        { url: 'http://localhost:8002/notify' }
       ]
     });
 
@@ -212,15 +212,15 @@ test('two servers - listen and broadcast to two - with different ids', t => {
   (async function () {
     const instance1 = await createNotifyAndHttpServer(8001, {
       servers: [
-        'http://localhost:8001/notify',
-        'http://localhost:8002/notify'
+        { url: 'http://localhost:8001/notify' },
+        { url: 'http://localhost:8002/notify' }
       ]
     });
 
     const instance2 = await createNotifyAndHttpServer(8002, {
       servers: [
-        'http://localhost:8001/notify',
-        'http://localhost:8002/notify'
+        { url: 'http://localhost:8001/notify' },
+        { url: 'http://localhost:8002/notify' }
       ]
     });
 

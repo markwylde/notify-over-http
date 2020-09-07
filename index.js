@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 
 function createNotifyServer (options) {
   const watchers = {};
@@ -12,7 +13,11 @@ function createNotifyServer (options) {
     }
 
     options.servers.forEach(server => {
-      http.request(`${server}?id=${id}&forwarded=true`, { method: 'POST' }).end();
+      const url = new URL(server.url);
+      url.searchParams.append('id', id);
+      url.searchParams.append('forwarded', true);
+      const agent = url.protocol === 'https:' ? https : http;
+      agent.request(url.href, { ...server, method: 'POST' }).end();
     });
   }
 
