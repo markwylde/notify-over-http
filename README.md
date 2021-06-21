@@ -1,6 +1,4 @@
 # notify-over-http
-[![Build Status](https://travis-ci.org/markwylde/notify-over-http.svg?branch=master)](https://travis-ci.org/markwylde/notify-over-http)
-[![David DM](https://david-dm.org/markwylde/notify-over-http.svg)](https://david-dm.org/markwylde/notify-over-http)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/markwylde/notify-over-http)
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/markwylde/notify-over-http)](https://github.com/markwylde/notify-over-http/releases)
 [![GitHub](https://img.shields.io/github/license/markwylde/notify-over-http)](https://github.com/markwylde/notify-over-http/blob/master/LICENSE)

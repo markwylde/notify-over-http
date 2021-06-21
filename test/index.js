@@ -1,6 +1,6 @@
 const http = require('http');
 
-const test = require('tape');
+const test = require('basictap');
 const notifyOverHttp = require('../');
 
 function createNotifyAndHttpServer (port, options) {
@@ -28,114 +28,112 @@ function createNotifyAndHttpServer (port, options) {
   });
 }
 
-test('one server - listen and broadcast to one - with one id', t => {
+test('one server - listen and broadcast to one - with one id', async t => {
   t.plan(2);
 
-  (async function () {
-    const { httpServer, notifyServer } = await createNotifyAndHttpServer(8000, {
-      servers: [
-        { url: 'http://localhost:8000/notify' }
-      ]
+  const { httpServer, notifyServer } = await createNotifyAndHttpServer(8000, {
+    servers: [
+      { url: 'http://localhost:8000/notify' }
+    ]
+  });
+
+  setTimeout(() => notifyServer.broadcast('SOMEID1'), 100);
+
+  http.request('http://localhost:8000/notify?id=SOMEID1', response => {
+    response.on('data', (chunk) => {
+      const data = chunk.toString();
+      if (data.includes('SOMEID1')) {
+        t.pass('responded with id');
+        response.destroy();
+        httpServer.close(() => {
+          t.pass('server closed successfully');
+        });
+      }
     });
-
-    setTimeout(() => notifyServer.broadcast('SOMEID1'), 100);
-
-    http.request('http://localhost:8000/notify?id=SOMEID1', response => {
-      response.on('data', (chunk) => {
-        const data = chunk.toString();
-        if (data.includes('SOMEID1')) {
-          t.pass('responded with id');
-          response.destroy();
-          httpServer.close(() => {
-            t.pass('server closed successfully');
-          });
-        }
-      });
-    }).end();
-  }());
+  }).end();
 });
 
-test('one server - listen and broadcast to one - with two ids', t => {
+test('one server - listen and broadcast to one - with two ids', async t => {
   t.plan(3);
 
-  (async function () {
-    const { httpServer, notifyServer } = await createNotifyAndHttpServer(8000, {
-      servers: [
-        { url: 'http://localhost:8000/notify' }
-      ]
+  const { httpServer, notifyServer } = await createNotifyAndHttpServer(8000, {
+    servers: [
+      { url: 'http://localhost:8000/notify' }
+    ]
+  });
+
+  setTimeout(() => notifyServer.broadcast('SOMEID1'), 100);
+  setTimeout(() => notifyServer.broadcast('SOMEID2'), 200);
+
+  let passes = 0;
+  http.request('http://localhost:8000/notify?id=SOMEID1&id=SOMEID2', response => {
+    response.on('data', (chunk) => {
+      const data = chunk.toString();
+      if (data.includes('SOMEID1')) {
+        passes = passes + 1;
+        t.pass('responded with SOMEID1');
+      }
+      if (data.includes('SOMEID2')) {
+        passes = passes + 1;
+        t.pass('responded with SOMEID2');
+      }
+      if (passes === 2) {
+        response.destroy();
+        httpServer.close(() => {
+          t.pass('server closed successfully');
+        });
+      }
     });
-
-    setTimeout(() => notifyServer.broadcast('SOMEID1'), 100);
-    setTimeout(() => notifyServer.broadcast('SOMEID2'), 200);
-
-    let passes = 0;
-    http.request('http://localhost:8000/notify?id=SOMEID1&id=SOMEID2', response => {
-      response.on('data', (chunk) => {
-        const data = chunk.toString();
-        if (data.includes('SOMEID1')) {
-          passes = passes + 1;
-          t.pass('responded with SOMEID1');
-        }
-        if (data.includes('SOMEID2')) {
-          passes = passes + 1;
-          t.pass('responded with SOMEID2');
-        }
-        if (passes === 2) {
-          response.destroy();
-          httpServer.close(() => {
-            t.pass('server closed successfully');
-          });
-        }
-      });
-    }).end();
-  }());
+  }).end();
 });
 
-test('two servers - listen and broadcast to one - with two ids', t => {
+test('two servers - listen and broadcast to one - with two ids', async t => {
   t.plan(4);
 
-  (async function () {
-    const instance1 = await createNotifyAndHttpServer(8001, {
+  const [instance1, instance2] = await Promise.all([
+    createNotifyAndHttpServer(8001, {
       servers: [
         { url: 'http://localhost:8001/notify' },
         { url: 'http://localhost:8002/notify' }
       ]
-    });
+    }),
 
-    const instance2 = await createNotifyAndHttpServer(8002, {
+    createNotifyAndHttpServer(8002, {
       servers: [
         { url: 'http://localhost:8001/notify' },
         { url: 'http://localhost:8002/notify' }
       ]
-    });
+    })
+  ]);
 
-    setTimeout(() => instance1.notifyServer.broadcast('SOMEID1'), 100);
-    setTimeout(() => instance2.notifyServer.broadcast('SOMEID2'), 200);
+  setTimeout(() => instance1.notifyServer.broadcast('SOMEID1'), 100);
+  setTimeout(() => instance2.notifyServer.broadcast('SOMEID2'), 200);
 
-    let passes = 0;
-    http.request('http://localhost:8001/notify?id=SOMEID1&id=SOMEID2', response => {
-      response.on('data', (chunk) => {
-        const data = chunk.toString();
-        if (data.includes('SOMEID1')) {
-          passes = passes + 1;
-          t.pass('responded with SOMEID1');
-        }
-        if (data.includes('SOMEID2')) {
-          passes = passes + 1;
-          t.pass('responded with SOMEID2');
-        }
-        if (passes === 2) {
-          response.destroy();
+  let passes = 0;
+  http.request('http://localhost:8001/notify?id=SOMEID1&id=SOMEID2', response => {
+    response.on('data', (chunk) => {
+      const data = chunk.toString();
+      if (data.includes('SOMEID1')) {
+        passes = passes + 1;
+        t.pass('responded with SOMEID1');
+      }
+      if (data.includes('SOMEID2')) {
+        passes = passes + 1;
+        t.pass('responded with SOMEID2');
+      }
+      if (passes === 2) {
+        response.destroy();
+        setTimeout(() => {
           instance1.httpServer.close(() => {
             t.pass('server closed successfully');
           });
           instance2.httpServer.close(() => {
             t.pass('server closed successfully');
           });
-        }
-      });
-    }).end();
-  }());
+        }, 100);
+      }
+    });
+  }).end();
 });
 
 test('two servers - listen and broadcast to two - with two ids', t => {
